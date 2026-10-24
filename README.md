@@ -2,7 +2,6 @@
 
 Conception et réalisation d'un robot mobile à 4 roues commandé par QR codes, via un Raspberry Pi 5 et une caméra USB.
 
-Projet réalisé lors d'un stage au **Centre de Recherche en Technologies Industrielles (CRTI), Cherraga, Alger**, dans le cadre de la formation *Robotique et Systèmes Intelligents* (Département Automatique, Faculté de Génie Électrique, USTHB), année universitaire 2025–2026.
 
 
 
