@@ -4,8 +4,7 @@ Conception et réalisation d'un robot mobile à 4 roues commandé par QR codes, 
 
 Projet réalisé lors d'un stage au **Centre de Recherche en Technologies Industrielles (CRTI), Cherraga, Alger**, dans le cadre de la formation *Robotique et Systèmes Intelligents* (Département Automatique, Faculté de Génie Électrique, USTHB), année universitaire 2025–2026.
 
-**Auteures :** Zani Ines Nour El Houda, Beldjoudi Racha Meriem
-**Encadrante :** Mme Chrifa
+
 
 ## Description du projet
 
