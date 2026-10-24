@@ -1,74 +1,71 @@
 # Robot QR Code Detector
 
-Conception et réalisation d'un robot mobile à 4 roues commandé par QR codes, via un Raspberry Pi 5 et une caméra USB.
+Design and construction of a 4-wheel mobile robot controlled by QR codes, using a Raspberry Pi 5 and a USB camera.
 
+## Project Description
 
+The robot receives its movement commands by reading QR codes shown in front of its camera. This approach provides a contactless, easily extensible control interface, unlike conventional remote controls.
 
+The system has three main parts:
 
-## Description du projet
+- **Processing unit:** Raspberry Pi 5
+- **Video acquisition:** USB camera, with QR code detection and decoding via OpenCV
+- **Actuators:** 4 DC motors driven by two L298N H-bridges
 
-Le robot reçoit ses ordres de déplacement en lisant des QR codes présentés devant sa caméra. Cette approche offre une interface de contrôle sans contact et facilement extensible, contrairement aux télécommandes classiques.
+### QR Commands
 
-Le système se compose de trois parties :
-
-- **Unité de traitement :** Raspberry Pi 5
-- **Acquisition vidéo :** caméra USB, avec détection et décodage des QR codes via OpenCV
-- **Actionneurs :** 4 moteurs DC pilotés par deux ponts en H L298N
-
-### Commandes QR
-
-| QR Code | Commande | Action |
+| QR Code | Command | Action |
 |---|---|---|
-| `F` | Forward | Avance (tous les moteurs vers l'avant) |
-| `B` | Backward | Recule (tous les moteurs vers l'arrière) |
-| `L` | Left | Tourne à gauche (moteurs gauche inversés) |
-| `R` | Right | Tourne à droite (moteurs droite inversés) |
-| `S` | Stop | Arrêt complet de tous les moteurs |
+| `F` | Forward | Move forward (all motors forward) |
+| `B` | Backward | Move backward (all motors backward) |
+| `L` | Left | Turn left (left motors reversed) |
+| `R` | Right | Turn right (right motors reversed) |
+| `S` | Stop | Stop all motors |
 
-## Matériel utilisé
+## Hardware
 
-- 1 × Raspberry Pi 5 (unité de traitement centrale)
-- 2 × pont en H L298N (contrôle des moteurs DC)
-- 4 × moteurs DC (entraînement des roues)
-- 1 × caméra USB (acquisition vidéo en temps réel)
-- Châssis robot 4 roues, alimentation et fils de connexion
+- 1 × Raspberry Pi 5 (main processing unit)
+- 2 × L298N H-bridge (DC motor drivers)
+- 4 × DC motors (wheel drive)
+- 1 × USB camera (real-time video acquisition)
+- 4-wheel robot chassis, power supply and jumper wires
 
-### Câblage (GPIO du Raspberry Pi 5 vers L298N)
+### Wiring (Raspberry Pi 5 GPIO to L298N)
 
-| Module | Broches L298N | GPIO (IN / IN / EN-PWM) | Moteur |
+| Module | L298N pins | GPIO (IN / IN / EN-PWM) | Motor |
 |---|---|---|---|
-| L298N #1 | IN1 / IN2 / ENA | 24 / 23 / 25 | Moteur 1 (avant-gauche) |
-| L298N #1 | IN3 / IN4 / ENB | 17 / 27 / 22 | Moteur 2 (arrière-gauche) |
-| L298N #2 | IN5 / IN6 / ENC | 5 / 6 / 13 | Moteur 3 (avant-droit) |
-| L298N #2 | IN7 / IN8 / END | 19 / 26 / 12 | Moteur 4 (arrière-droit) |
+| L298N #1 | IN1 / IN2 / ENA | 24 / 23 / 25 | Motor 1 (front-left) |
+| L298N #1 | IN3 / IN4 / ENB | 17 / 27 / 22 | Motor 2 (rear-left) |
+| L298N #2 | IN5 / IN6 / ENC | 5 / 6 / 13 | Motor 3 (front-right) |
+| L298N #2 | IN7 / IN8 / END | 19 / 26 / 12 | Motor 4 (rear-right) |
 
-La direction de rotation de chaque moteur dépend de l'état logique des broches `IN` ; la vitesse est réglée par le rapport cyclique du signal PWM sur les broches `EN` (50 % par défaut).
+Each motor's direction of rotation depends on the logic state of its `IN` pins; speed is set by the duty cycle of the PWM signal on the `EN` pins (50% by default).
 
-## Logiciel
+## Software
 
-Développé en **Python 3** sur Raspberry Pi OS, avec les bibliothèques :
+Written in **Python 3** on Raspberry Pi OS, using these libraries:
 
-- `gpiozero` : gestion des GPIO et du PWM
-- `OpenCV` (`cv2`) : capture vidéo, détection et décodage des QR codes
-- `qrcode` : génération des images QR codes de commande
-- `pyzbar` : décodage QR alternatif (utilisé dans certains scripts)
+- `gpiozero`: GPIO and PWM control
+- `OpenCV` (`cv2`): video capture, QR code detection and decoding
+- `qrcode`: generation of the command QR code images
+- `pyzbar`: alternative QR decoding (used in some scripts)
 
-### Fonctionnement
+### How It Works
 
-1. Initialisation des GPIO, de la caméra USB et du détecteur QR
-2. Capture d'une image en boucle
-3. Si un QR code est détecté, sa valeur (`F`, `B`, `L`, `R`, `S`) déclenche la fonction de mouvement correspondante
-4. Pause d'une seconde pour éviter les répétitions involontaires, puis retour à la capture
+1. Initialize the GPIO, the USB camera and the QR detector
+2. Capture images in a loop
+3. When a QR code is detected, its value (`F`, `B`, `L`, `R`, `S`) triggers the matching movement function
+4. Wait one second to avoid unwanted repeated commands, then go back to capturing
 
-### Fichiers du dépôt
+### Repository Files
 
-| Fichier | Rôle |
+| File | Purpose |
 |---|---|
-| `robotfonctionel.py` | Programme principal : détecte les QR codes et commande le moteur |
-| `qr_detec.py` | Détection de QR codes avec tracé du contour |
-| `qr_test.py` | Test de la caméra |
-| `qr_creation.py`, `qr_.py` | Génération des QR codes de commande |
-| `onemotormotion.py` | Test d'un moteur au clavier (vitesse, sens) |
+| `robotfonctionel.py` | Main program: detects QR codes and drives the motor |
+| `qr_detec.py` | QR code detection with outline drawing |
+| `qr_test.py` | Camera test |
+| `qr_creation.py`, `qr_.py` | Generation of the command QR codes |
+| `onemotormotion.py` | Keyboard test of a single motor (speed, direction) |
 
 ## Installation
 
@@ -76,18 +73,18 @@ Développé en **Python 3** sur Raspberry Pi OS, avec les bibliothèques :
 pip install opencv-python pyzbar qrcode gpiozero
 ```
 
-Pour générer les QR codes : `python qr_.py`, puis présenter les images devant la caméra du robot. Quitter le programme avec `q` ou la touche Échap.
+To generate the QR codes, run `python qr_.py`, then show the images in front of the robot's camera. Quit the program with `q` or the Esc key.
 
-## Difficultés rencontrées
+## Challenges
 
-- **Détection QR instable** en mauvais éclairage : amélioration de l'éclairage et augmentation de la résolution de la caméra.
-- **Configuration GPIO sur Raspberry Pi 5** avec `gpiozero` : vérification et configuration explicite du pin factory.
-- **Répétition de commandes** due à la synchronisation vidéo/moteur : ajout d'un délai `sleep(1)` après chaque commande.
+- **Unstable QR detection** in poor lighting: solved by improving the ambient light and increasing the camera resolution.
+- **GPIO configuration on Raspberry Pi 5** with `gpiozero`: solved by checking and explicitly configuring the pin factory.
+- **Repeated commands** caused by video/motor synchronization: solved by adding a `sleep(1)` delay after each command.
 
-## Perspectives
+## Future Work
 
-- Intégration de YOLO pour la détection par vision et la reconnaissance gestuelle
-- Capteurs de distance pour l'évitement d'obstacles
-- Commande à distance via SSH
+- Integrating YOLO for vision-based detection and gesture recognition
+- Distance sensors for obstacle avoidance
+- Remote control via SSH
 
-Ces améliorations n'ont pas pu être réalisées faute d'équipements disponibles au CRTI.
+
